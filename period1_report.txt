@@ -1,0 +1,10 @@
+Cloud Log Summary Report
+====================================
+Total Lines: 200000
+Invalid Lines: 4893
+
+Log Levels:
+  INFO: 135269
+  WARN: 38420
+  ERROR: 19442
+  INVALID_LEVEL: 1976

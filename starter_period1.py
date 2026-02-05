@@ -34,16 +34,22 @@ def parse_line(line: str):
     timestamp | level | service | message
     """
     # TODO 1: strip whitespace and ignore empty lines (treat empty as invalid)
+    line = line.strip()
+    if not line:
+        return None
     # TODO 2: split by '|' and trim whitespace around each part
+    parts = [part.strip() for part in line.split('|')]
     # TODO 3: if you do NOT have exactly 4 parts, return None
+    if len(parts) != 4:
+        return None
     # TODO 4: return the 4 parts (timestamp, level, service, message)
-    pass
+    return tuple(parts)
 
 
 def normalize_level(level: str) -> str:
     """Normalize log level to uppercase."""
     # TODO 5: return level in uppercase (hint: .upper())
-    pass
+    return level.upper()
 
 
 def main():
@@ -71,15 +77,40 @@ def main():
     #   - normalize the level
     #   - if level in ALLOWED_LEVELS -> level_counts[level] += 1
     #   - else -> level_counts["INVALID_LEVEL"] += 1
+    with open(LOG_FILE, "r") as f:
+        for line in f:
+            total_lines += 1
+            parsed = parse_line(line)
+            if parsed is None:
+                invalid_lines += 1
+                continue
+            timestamp, level, service, message = parsed
+            normalized_level = normalize_level(level)
+            if normalized_level in ALLOWED_LEVELS:
+                level_counts[normalized_level] += 1
+            else:
+                level_counts["INVALID_LEVEL"] += 1
 
     # TODO 7: Create a summary string (multi-line) with:
     # Total lines, Invalid lines, INFO, WARN, ERROR, INVALID_LEVEL
+    summary = f"""Cloud Log Summary Report
+====================================
+Total Lines: {total_lines}
+Invalid Lines: {invalid_lines}
+
+Log Levels:
+  INFO: {level_counts['INFO']}
+  WARN: {level_counts['WARN']}
+  ERROR: {level_counts['ERROR']}
+  INVALID_LEVEL: {level_counts['INVALID_LEVEL']}
+"""
 
     # TODO 8: Print the summary
+    print(summary)
 
     # TODO 9: Save the summary into period1_report.txt
-
-    pass
+    with open(OUTPUT_REPORT, "w") as f:
+        f.write(summary)
 
 
 if __name__ == "__main__":
